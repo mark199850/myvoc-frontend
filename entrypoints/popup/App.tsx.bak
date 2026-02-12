@@ -1,0 +1,139 @@
+import { useState } from 'react';
+import WordItem from '../../components/WordItem';
+import './App.css';
+import ReactDOM from 'react-dom/client';
+import { VocabularyItem } from '@/types/vocabulary';
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
+function App() {
+    return (
+        <MainScreen />
+    )
+}
+//ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+export default App;
+
+function MainScreen() {
+    const [list, setList] = useState<VocabularyItem[]>([]);
+
+    const handleAdd = (newItem: VocabularyItem) => {
+        setList((prev) => [...prev, newItem]);
+    }
+
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <ExtHeader />
+        </QueryClientProvider>
+
+    )
+}
+
+function ExtHeader() {
+
+    const [query, setQuery] = useState('');
+    const [learnedWordsCount, setLeanredWordsCount] = useState(0);
+    const [enabled, setEnabled] = useState(false);
+
+    const useGetWord = (enabled: boolean, query: string) => {
+
+        return useQuery({
+            queryKey: ["characters"],
+            enabled,
+            queryFn: async () =>
+                (await fetch("http://localhost:7058/api/Word/" + query)).json(),
+        });
+        // if (isLoading) return <p>Loading…</p>;
+        // if (error)     return <p>Error loading data</p>;
+    }
+    const { data, error, isLoading } = useGetWord(enabled, query);
+
+    useEffect(() => {
+        if (data) {
+            addNewWord(data);
+            setEnabled(false); // optional: prevent refetch
+        }
+    }, [data]);
+
+    useEffect(() => {
+        browser.storage.local
+            .get("words")
+            .then((result: { words?: VocabularyItem[] }) => {
+                const learnedCount = (result.words ?? [])
+                    .filter(w => w.learned)
+                    .length;
+                setLeanredWordsCount(learnedCount);
+            });
+        // browser.storage.local.get("learned").then((r) => setLeanredWordsCount(r.length))
+    }, []);
+
+    // useEffect(() => {
+    //     const timeOutId = setTimeout(() => getWord(query), 500);
+    //     return () => clearTimeout(timeOutId);
+    // }, [query]);
+
+    const handleAddWord = (e) => {
+        if (e.key === "Enter") {
+            console.log('megyen')
+            setEnabled(true);
+        }
+    }
+
+
+
+    const addNewWord = (word: VocabularyItem): void => {
+        browser.storage.local.set(word)
+    }
+    return (
+
+        <div style={{ width: '360px', padding: '1rem' }}>
+
+            <header className='flex flex-col gap-4 items-stretch'>
+                <h1 className='text-xl self-center'>You know {learnedWordsCount} words</h1>
+                <progress className="progress w-56 self-center" value={learnedWordsCount} max="10"></progress>
+                <input type="text" placeholder="Search or add" className="input bg-amber-60" onChange={e => setQuery(e.target.value)} onKeyDown={handleAddWord} />
+            </header>
+        </div>
+
+    )
+}
+
+
+function List() {
+    const [words, setWords] = useState<VocabularyItem[]>([])
+
+    useEffect(() => {
+        browser.storage.local
+            .get("words")
+            .then((result: { words?: VocabularyItem[] }) => {
+                setWords(result.words ?? []);
+            });
+    }, []);
+
+
+    // const [items] = useState<VocabularyItem[]>([
+    //     { 
+    //         id: '1',
+    //         word: 'Ephemral',
+    //         phonetic: '/e/',
+    //         partOfSpeech: 'adj',
+    //         learned: true,
+    //         examples: []
+    //     }
+    // ]);
+
+
+
+
+    return (
+        <ul className="list bg-base-100 rounded-box shadow-md">
+            {words.map((c) => (
+                <WordItem key={c.id} item={c} onClick={console.log} />
+            ))}
+        </ul>
+
+
+    )
+}

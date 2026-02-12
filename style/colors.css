@@ -1,0 +1,29 @@
+@plugin "daisyui" {
+  themes: light-chill, dark-chill;
+}
+
+@theme {
+  /* --- THEME 1: WARM CHILL (Light) --- */
+  --color-light-chill-primary: #d4a373;         /* Soft Tan/Camel */
+  --color-light-chill-secondary: #faedcd;       /* Creamy Parchment */
+  --color-light-chill-accent: #ccd5ae;          /* Muted Sage Green */
+  --color-light-chill-neutral: #588157;         /* Forest Green */
+  --color-light-chill-base-100: #fefae0;        /* Warm Off-white Bg */
+  --color-light-chill-base-content: #283618;    /* Deep Earthy Brown Text */
+
+  /* --- THEME 2: DARK CHILL (Dark) --- */
+  --color-dark-chill-primary: #bc6c25;          /* Burnt Orange/Rust */
+  --color-dark-chill-secondary: #2c3639;        /* Deep Charcoal */
+  --color-dark-chill-accent: #94a684;           /* Desaturated Sage */
+  --color-dark-chill-neutral: #1a1c1e;          /* Almost Black */
+  --color-dark-chill-base-100: #212529;         /* Dark Grey-Green Bg */
+  --color-dark-chill-base-content: #e9edc9;     /* Soft Cream Text */
+}
+
+/* Standard Tailwind directives */
+@layer base {
+  html {
+    /* Smoothly animate color changes */
+    transition: color 0.3s, background-color 0.3s;
+  }
+}

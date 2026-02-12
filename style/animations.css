@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@utility animate-cubic-bouncy-sm {
+  transition-property: width, background-color, scale;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.3, 1, 0, 1.1);
+}
+@utility animate-cubic-bouncy-lg {
+  transition-property: width, background-color, scale;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.3, 1, 0, 2);
+}

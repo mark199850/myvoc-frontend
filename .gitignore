@@ -14,6 +14,11 @@ stats-*.json
 .wxt
 web-ext.config.ts
 
+.env.local
+.env
+env.d.ts
+.bak
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
